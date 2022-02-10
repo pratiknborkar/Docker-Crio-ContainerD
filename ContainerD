@@ -34,3 +34,5 @@ sudo containerd config default > /etc/containerd/config.toml
 # restart containerd
 sudo systemctl restart containerd
 sudo systemctl enable containerd
+
+#To use the systemd cgroup driver, set plugins.cri.systemd_cgroup = true in /etc/containerd/config.toml
