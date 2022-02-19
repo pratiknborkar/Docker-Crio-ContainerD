@@ -1,3 +1,4 @@
+
 # Configure persistent loading of modules
 sudo tee /etc/modules-load.d/containerd.conf <<EOF
 overlay
@@ -19,20 +20,24 @@ EOF
 sudo sysctl --system
 
 # Install required packages
-sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+sudo apt install -y curl gnupg2 software-properties-common apt-transport-https ca-certificates
 
 # Add Docker repo
-sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
 # Install containerd
-sudo yum update -y && yum install -y containerd.io
+sudo apt update
+sudo apt install -y containerd.io
 
 # Configure containerd and start service
-sudo mkdir -p /etc/containerd
-sudo containerd config default > /etc/containerd/config.toml
+sudo su -
+mkdir -p /etc/containerd
+containerd config default>/etc/containerd/config.toml
 
 # restart containerd
 sudo systemctl restart containerd
 sudo systemctl enable containerd
+systemctl status  containerd
 
-#To use the systemd cgroup driver, set plugins.cri.systemd_cgroup = true in /etc/containerd/config.toml
+To use the systemd cgroup driver, set plugins.cri.systemd_cgroup = true in /etc/containerd/config.toml
